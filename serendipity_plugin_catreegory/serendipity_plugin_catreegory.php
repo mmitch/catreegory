@@ -111,10 +111,12 @@ class serendipity_plugin_catreegory extends serendipity_plugin {
 
         // check enabled subtrees
         $cat_active = array();
-        $cat_walk = $serendipity['GET']['category'];
-        while ($cat_walk) {
-            $cat_active[$cat_walk] = 1;
-            $cat_walk = $categories[serendipity_plugin_catreegory::find_by_id($categories, $cat_walk)]['parentid'];
+        if (isset($serendipity['GET']['category'])) {
+            $cat_walk = $serendipity['GET']['category'];
+            while ($cat_walk) {
+                $cat_active[$cat_walk] = 1;
+                $cat_walk = $categories[serendipity_plugin_catreegory::find_by_id($categories, $cat_walk)]['parentid'];
+            }
         }
 
         if (is_array($categories) && count($categories)) {
@@ -122,12 +124,12 @@ class serendipity_plugin_catreegory extends serendipity_plugin {
             foreach ($categories as $cid => $cat) {
 
                 // only show top level categories or active subtrees
-   	        if ($cat['depth'] > 0) {
-                    if (! $cat_active[$categories[$cid]['parentid']]) {
+                if ($cat['depth'] > 0) {
+                    if (!array_key_exists($cat['parentid'], $cat_active)) {
                         unset($categories[$cid]);
                         continue;
                     }
- 	        }
+                }
 
                 $categories[$cid]['feedCategoryURL'] = serendipity_feedCategoryURL($cat, 'serendipityHTTPPath');
                 $categories[$cid]['categoryURL']     = serendipity_categoryURL($cat, 'serendipityHTTPPath');
