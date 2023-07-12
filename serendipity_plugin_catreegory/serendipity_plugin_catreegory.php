@@ -58,7 +58,7 @@ class serendipity_plugin_catreegory extends serendipity_plugin {
 
     function find_by_id($categories, $id) {
         reset($categories);
-        while (list($key, $val) = each($categories)) {
+        foreach ($categories as $key => $val) {
             if ($val['categoryid'] == $id) {
                 return $key;
             }
